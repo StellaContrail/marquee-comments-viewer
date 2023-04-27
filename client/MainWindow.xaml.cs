@@ -1,0 +1,129 @@
+﻿using Amazon;
+using Amazon.Runtime;
+using Amazon.Runtime.CredentialManagement;
+using Amazon.SQS;
+using Amazon.SQS.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using System.Windows.Threading;
+
+namespace MarqueeCommentsViewer
+{
+    /// <summary>
+    /// MainWindow.xaml の相互作用ロジック
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        private Random random = new Random();
+        private double windowWidth = 300;
+        private double windowHeight = 300;
+
+        private string queueUrl;
+        AmazonSQSClient client;
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            SizeChanged += OnWindowSizeChanged;
+            ContentRendered += OnContentRendered;
+
+            AWSCredentials awsCredentials;
+            if (GetCredential("default", out awsCredentials) == false)
+            {
+                MessageBox.Show("Could not fetch the AWS Credential Profile");
+                Environment.Exit(0);
+            }
+
+            client = new AmazonSQSClient(awsCredentials, RegionEndpoint.APNortheast1);
+            var response = client.GetQueueUrl("NicoNicoCommentsStack-NicoNicoCommentsQueue9A6A5CE2-o98DOcyw0dsx");
+            queueUrl = response.QueueUrl;
+
+            StartFetchQueue();
+        }
+
+        private async void StartFetchQueue()
+        {
+            while (true)
+            {
+                Console.WriteLine("Waiting for comments...");
+                await ReceiveQueue();
+            }
+        }
+
+        private async Task ReceiveQueue()
+        {
+            var receiveMessageRequest = new ReceiveMessageRequest
+            {
+                MaxNumberOfMessages = 1,
+                QueueUrl = queueUrl,
+                WaitTimeSeconds = 20,
+            };
+
+            var receiveMessageResponse = await client.ReceiveMessageAsync(receiveMessageRequest);
+
+            if (receiveMessageResponse.Messages.Count > 0)
+            {
+                var message = receiveMessageResponse.Messages[0];
+                Console.WriteLine("[Message] " + message.Body);
+
+                var deleteMessageRequest = new DeleteMessageRequest
+                {
+                    QueueUrl = queueUrl,
+                    ReceiptHandle = message.ReceiptHandle
+                };
+                await client.DeleteMessageAsync(deleteMessageRequest);
+
+                var x = windowWidth;
+                var y = random.NextDouble() * (windowHeight - 50);
+                var comment = new Comment(message.Body, x, y);
+                comment.Associate(CommentCanvas);
+                comment.Animate();
+            }
+        }
+
+        private static bool GetCredential(string profileName, out AWSCredentials credential)
+        {
+            var homeDrive = Environment.GetEnvironmentVariable("HomeDrive");
+            var homePath = Environment.GetEnvironmentVariable("HomePath");
+            var homeDirectory = homeDrive + homePath;
+            var filePath = System.IO.Path.Combine(homeDirectory, ".aws", "credentials");
+
+            var chain = new CredentialProfileStoreChain(filePath);
+            AWSCredentials awsCredentials;
+            if (chain.TryGetAWSCredentials(profileName, out awsCredentials) == false)
+            {
+                credential = null;
+                return false;
+            }
+
+            credential = awsCredentials;
+            return true;
+        }
+        private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            windowWidth = e.NewSize.Width;
+            windowHeight = e.NewSize.Height;
+        }
+
+        private void OnContentRendered(object sender, EventArgs e)
+        {
+            windowWidth = ActualWidth;
+            windowHeight = ActualHeight;
+        }
+    }
+}
