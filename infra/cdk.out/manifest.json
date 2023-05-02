@@ -1,0 +1,232 @@
+{
+  "version": "31.0.0",
+  "artifacts": {
+    "MarqueeCommentsViewerStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "MarqueeCommentsViewerStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "MarqueeCommentsViewerStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "MarqueeCommentsViewerStack.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/95fe5e28eb34b9f04c54ed01474f4e1b8ff782748dc7617661fca01dcf43f87a.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "MarqueeCommentsViewerStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "MarqueeCommentsViewerStack.assets"
+      ],
+      "metadata": {
+        "/MarqueeCommentsViewerStack/marquee-comments-viewer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "marqueecommentsviewer84408E8C"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/marquee-comments-viewer/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "marqueecommentsviewerPolicy6C0E50D0"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/marquee-comments-viewer/AutoDeleteObjectsCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "marqueecommentsviewerAutoDeleteObjectsCustomResourceFD60C96A"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/cloudfront-oac": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "cloudfrontoac"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/DeployWebsite/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployWebsiteAwsCliLayer17DBC421"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/DeployWebsite/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployWebsiteCustomResourceD116527B"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/myDist/Origin1/S3Origin/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "myDistOrigin1S3Origin5717909C"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/myDist/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "myDist9DB766F3"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/MarqueeCommentsViewerQueue/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MarqueeCommentsViewerQueue80D2F29D"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/SendCommentFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SendCommentFunctionServiceRole7A71257B"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/SendCommentFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SendCommentFunctionServiceRoleDefaultPolicy62F8F1F4"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/SendCommentFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SendCommentFunction5F40C235"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/MarqueeCommentsViewerAPI/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MarqueeCommentsViewerAPID2C0292F"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/MarqueeCommentsViewerAPI/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MarqueeCommentsViewerAPIDeployment9E3727E80f7134eba091c750d874f0b9c7103218"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/MarqueeCommentsViewerAPI/DeploymentStage.prod/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MarqueeCommentsViewerAPIDeploymentStageprodBCA36173"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/MarqueeCommentsViewerAPI/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MarqueeCommentsViewerAPIEndpoint38F62CD7"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/MarqueeCommentsViewerAPI/Default/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MarqueeCommentsViewerAPIOPTIONSFDC3D8B5"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/MarqueeCommentsViewerAPI/Default/comment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MarqueeCommentsViewerAPIcommentFC153A62"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/MarqueeCommentsViewerAPI/Default/comment/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MarqueeCommentsViewerAPIcommentOPTIONSCE8C81AD"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/MarqueeCommentsViewerAPI/Default/comment/POST/ApiPermission.MarqueeCommentsViewerStackMarqueeCommentsViewerAPIDA382DC8.POST..comment": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MarqueeCommentsViewerAPIcommentPOSTApiPermissionMarqueeCommentsViewerStackMarqueeCommentsViewerAPIDA382DC8POSTcomment831F8D4B"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/MarqueeCommentsViewerAPI/Default/comment/POST/ApiPermission.Test.MarqueeCommentsViewerStackMarqueeCommentsViewerAPIDA382DC8.POST..comment": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MarqueeCommentsViewerAPIcommentPOSTApiPermissionTestMarqueeCommentsViewerStackMarqueeCommentsViewerAPIDA382DC8POSTcommentDE768BA5"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/MarqueeCommentsViewerAPI/Default/comment/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MarqueeCommentsViewerAPIcommentPOST6A86498A"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/MarqueeCommentsViewerStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "MarqueeCommentsViewerStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}
