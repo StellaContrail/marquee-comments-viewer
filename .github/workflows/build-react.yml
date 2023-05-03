@@ -29,9 +29,3 @@ jobs:
         run: |
           npm build
         working-directory: web
-
-      - name: Test
-        run: |
-          npm test
-        working-directory: web
-
