@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  build_test_deploy:
+  npm_build_test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -27,9 +27,3 @@ jobs:
       - name: Build
         run: npm run build
         working-directory: web
-        
-      - name: Store build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: build artifacts
-          path: web/build
