@@ -6,13 +6,13 @@ import { useEffect, useState } from 'react';
 
 function CommentPage() {
   const [comment, setComment] = useState("");
-  let API_BASE_URL = "";
+  const [BASEURL, setBASEURL] = useState("");
 
   useEffect(() => {
     fetch('config.json')
       .then((res) => res.json())
       .then((json) => json.API_BASE_URL)
-      .then((url) => API_BASE_URL = url);
+      .then((url) => setBASEURL(url));
   });
 
   const handleSubmit = async () => {
@@ -26,7 +26,7 @@ function CommentPage() {
 
     try {
       console.log("sending the comment...");
-      await window.fetch(API_BASE_URL + "/comment", {
+      await window.fetch(BASEURL + "/comment", {
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify(body)
