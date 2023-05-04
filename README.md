@@ -18,6 +18,14 @@ cdk deploy
 ![architecture](architecture.png)
 
 
+## Roadmap
+1. [client] GUI Form for start/stop listening button
+2. [web] chat-like queue history
+3. [all] test codes
+4. [web] cognito login form
+5. [all] refactorization
+
+
 ## License
 MIT License
 
