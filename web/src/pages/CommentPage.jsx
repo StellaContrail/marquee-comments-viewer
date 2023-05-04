@@ -1,10 +1,19 @@
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
 
 function CommentPage() {
   const [comment, setComment] = useState("");
+  const [BASEURL, setBASEURL] = useState("");
+
+  useEffect(() => {
+    fetch('config.json')
+      .then((res) => res.json())
+      .then((json) => json.API_BASE_URL)
+      .then((url) => setBASEURL(url));
+  });
 
   const handleSubmit = async () => {
     if (comment.trim() === "") {
@@ -12,15 +21,17 @@ function CommentPage() {
     }
 
     const body = {
-      "id": 1,
-      "body": comment
+      "message": comment
     }
 
     try {
-      await window.fetch("https://3avu3bh3b4.execute-api.ap-northeast-1.amazonaws.com/prod/comment/", {
-        method: "POST",
+      console.log("sending the comment...");
+      await window.fetch(BASEURL + "/comment", {
+        method: 'POST',
+        mode: 'cors',
         body: JSON.stringify(body)
       });
+      console.log("done.");
 
       setComment("");
     } catch (e) {

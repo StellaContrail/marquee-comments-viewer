@@ -1,4 +1,6 @@
 ﻿using Amazon;
+using Amazon.CloudFormation;
+using Amazon.CloudFormation.Model;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.SQS;
@@ -32,9 +34,7 @@ namespace MarqueeCommentsViewer
         private Random random = new Random();
         private double windowWidth = 300;
         private double windowHeight = 300;
-
-        private string queueUrl;
-        AmazonSQSClient client;
+        private const string STACK_NAME = "MarqueeCommentsViewerStack";
 
         public MainWindow()
         {
@@ -42,30 +42,35 @@ namespace MarqueeCommentsViewer
             SizeChanged += OnWindowSizeChanged;
             ContentRendered += OnContentRendered;
 
-            AWSCredentials awsCredentials;
-            if (GetCredential("default", out awsCredentials) == false)
+            var queueUrl = "";
+            using (var cfnClient = new AmazonCloudFormationClient())
             {
-                MessageBox.Show("Could not fetch the AWS Credential Profile");
-                Environment.Exit(0);
+                var request = new ListStackResourcesRequest();
+                request.StackName = STACK_NAME;
+                var response = cfnClient.ListStackResources(request);
+                foreach(var resource in response.StackResourceSummaries)
+                {
+                    if (resource.ResourceType == "AWS::SQS::Queue")
+                    {
+                        queueUrl = resource.PhysicalResourceId;
+                    }
+                }
             }
 
-            client = new AmazonSQSClient(awsCredentials, RegionEndpoint.APNortheast1);
-            var response = client.GetQueueUrl("NicoNicoCommentsStack-NicoNicoCommentsQueue9A6A5CE2-o98DOcyw0dsx");
-            queueUrl = response.QueueUrl;
-
-            StartFetchQueue();
+            var sqsClient = new AmazonSQSClient();
+            StartFetchQueue(sqsClient, queueUrl);
         }
 
-        private async void StartFetchQueue()
+        private async void StartFetchQueue(AmazonSQSClient client, String queueUrl)
         {
             while (true)
             {
                 Console.WriteLine("Waiting for comments...");
-                await ReceiveQueue();
+                await ReceiveQueue(client, queueUrl);
             }
         }
 
-        private async Task ReceiveQueue()
+        private async Task ReceiveQueue(AmazonSQSClient client, String queueUrl)
         {
             var receiveMessageRequest = new ReceiveMessageRequest
             {
@@ -79,7 +84,7 @@ namespace MarqueeCommentsViewer
             if (receiveMessageResponse.Messages.Count > 0)
             {
                 var message = receiveMessageResponse.Messages[0];
-                Console.WriteLine("[Message] " + message.Body);
+                Console.WriteLine($"[Message] {message.Body}");
 
                 var deleteMessageRequest = new DeleteMessageRequest
                 {

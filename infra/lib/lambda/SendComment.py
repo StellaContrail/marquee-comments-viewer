@@ -3,21 +3,31 @@ import boto3
 import os
 
 def lambda_handler(event, context):
-    name = os.environ['COMMENT_QUEUE']
-    sqs = boto3.resource('sqs')
+    # Environmental variables
+    NAME = os.environ['COMMENT_QUEUE']
+    ORIGIN_URL = os.environ['ORIGIN_URL']
 
+    # SQS Handler
+    sqs = boto3.resource('sqs')
+    
+    # Read message from the request
+    data = json.loads(event['body'])
+    msg = data['message']
+    
     try:
-        queue = sqs.get_queue_by_name(QueueName=name)
+        queue = sqs.get_queue_by_name(QueueName=NAME)
     except:
-      return {
-        'statusCode': 500,
-        'body': json.dumps("Could not find the queue")
-      }
+      return create_response(200, ORIGIN_URL, 'Could not find the queue')
     
-    
-    queue.send_message(MessageBody=event["body"])
-    
-    return {
-        'statusCode': 200,
-        'body': json.dumps("Successfully executed")
+    queue.send_message(MessageBody=msg)
+    return create_response(200, ORIGIN_URL, 'Successfully executed')
+
+# response template
+def create_response(status, origin, message):
+   return {
+        'statusCode': status,
+        'headers': {
+          'Access-Control-Allow-Origin': origin
+        },
+        'body': json.dumps({'message': message}) + "\n"
     }
