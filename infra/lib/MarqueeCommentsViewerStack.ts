@@ -14,7 +14,7 @@ export class MarqueeCommentsViewerStack extends cdk.Stack {
     super(scope, id, props);
     
     // Create S3 bucket for website
-    const websiteBucket = new s3.Bucket(this, 'marquee-comments-viewer', {
+    const websiteBucket = new s3.Bucket(this, 's3-bucket-website', {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true
     });
@@ -30,16 +30,8 @@ export class MarqueeCommentsViewerStack extends cdk.Stack {
       }
     });
     
-    // Upload website artifact to the S3 bucket
-    // neeed to rebuild react source code before this deployment
-    // ref: https://tmokmss.hatenablog.com/entry/20220515/1652623112
-    new s3deploy.BucketDeployment(this, 'DeployWebsite', {
-      sources: [s3deploy.Source.asset('../web/build')],
-      destinationBucket: websiteBucket,
-    });
-
     // Create CloudFront distribution
-    const distribution = new cloudfront.Distribution(this, 'myDist', {
+    const distribution = new cloudfront.Distribution(this, 'cloudfront-destribution', {
       defaultBehavior: { 
         origin: new origins.S3Origin(websiteBucket),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS
@@ -66,12 +58,15 @@ export class MarqueeCommentsViewerStack extends cdk.Stack {
     websiteBucket.addToResourcePolicy(websitePolicy);
 
     // Create SQS Queue to hold comments
-    const CommentSQS = new sqs.Queue(this, 'MarqueeCommentsViewerQueue', {});
+    const CommentSQS = new sqs.Queue(this, 'sqs-queue', {
+      queueName: 'MarqueeCommentsViewerQueue'
+    });
 
     // Create Lambda to receive comments
     const KLayer = lambda.LayerVersion.fromLayerVersionArn(this, 'boto3',
       'arn:aws:lambda:ap-northeast-1:770693421928:layer:Klayers-p39-boto3:13');
-    const SendCommentLambda = new lambda.Function(this, 'SendCommentFunction', {
+    const SendCommentLambda = new lambda.Function(this, 'lambda-function', {
+      functionName: 'SendCommentFunction',
       runtime: lambda.Runtime.PYTHON_3_9,
       handler: 'SendComment.lambda_handler',
       code: lambda.Code.fromAsset('lib/lambda'),
@@ -88,7 +83,8 @@ export class MarqueeCommentsViewerStack extends cdk.Stack {
     }));
 
     // Create API Gateway to access the endpoint
-    const api = new apigateway.RestApi(this, 'MarqueeCommentsViewerAPI', {
+    const api = new apigateway.RestApi(this, 'apigw-restapi', {
+      restApiName: 'MarqueeCommentsViewerAPIEndpoint',
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
         allowMethods: apigateway.Cors.ALL_METHODS,
@@ -103,9 +99,10 @@ export class MarqueeCommentsViewerStack extends cdk.Stack {
     const config = {
       API_BASE_URL: api.url
     }
-    new s3deploy.BucketDeployment(this, 'BucketDeployment', {
-      sources: [s3deploy.Source.jsonData('config.json', config)],
+    new s3deploy.BucketDeployment(this, 's3-deployment', {
+      sources: [s3deploy.Source.asset('../web/build', { exclude: ['config.json'] }), s3deploy.Source.jsonData('config.json', config)],
       destinationBucket: websiteBucket,
+      retainOnDelete: false
     });
 
   }
