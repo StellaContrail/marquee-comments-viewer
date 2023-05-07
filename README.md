@@ -1,6 +1,10 @@
 # Marquee Comments Viewer
 Display marqueeing comments on your desktop
 
+## Features
+- Real-time comments rendering
+- Fully IaC support
+- Runs smoothly with GPU support
 
 ## Installation
 You need to install `aws-cdk` and `npm` to execute following commands.
@@ -17,7 +21,6 @@ cdk deploy
 ## Architecture
 ![architecture](architecture.png)
 
-
 ## Roadmap
 1. [client] GUI Form for start/stop listening button
 2. [web] chat-like queue history
@@ -25,6 +28,8 @@ cdk deploy
 4. [web] cognito login form
 5. [all] refactorization
 
+## Final Architecture
+![final architecture](architecture_final.png)
 
 ## License
 MIT License
