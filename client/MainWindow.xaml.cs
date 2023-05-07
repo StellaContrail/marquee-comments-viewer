@@ -26,9 +26,6 @@ using System.Windows.Threading;
 
 namespace MarqueeCommentsViewer
 {
-    /// <summary>
-    /// MainWindow.xaml の相互作用ロジック
-    /// </summary>
     public partial class MainWindow : Window
     {
         private Random random = new Random();
@@ -42,8 +39,15 @@ namespace MarqueeCommentsViewer
             SizeChanged += OnWindowSizeChanged;
             ContentRendered += OnContentRendered;
 
+            AWSCredentials credentials;
+            if (GetCredential("default", out credentials) == false)
+            {
+                Console.WriteLine("failed to execute");
+                Environment.Exit(0);
+            }
+
             var queueUrl = "";
-            using (var cfnClient = new AmazonCloudFormationClient())
+            using (var cfnClient = new AmazonCloudFormationClient(credentials, RegionEndpoint.APNortheast1))
             {
                 var request = new ListStackResourcesRequest();
                 request.StackName = STACK_NAME;
@@ -57,7 +61,7 @@ namespace MarqueeCommentsViewer
                 }
             }
 
-            var sqsClient = new AmazonSQSClient();
+            var sqsClient = new AmazonSQSClient(credentials, RegionEndpoint.APNortheast1);
             StartFetchQueue(sqsClient, queueUrl);
         }
 
@@ -94,7 +98,7 @@ namespace MarqueeCommentsViewer
                 await client.DeleteMessageAsync(deleteMessageRequest);
 
                 var x = windowWidth;
-                var y = random.NextDouble() * (windowHeight - 50);
+                var y = random.NextDouble() * (windowHeight - 100) + 50;
                 var comment = new Comment(message.Body, x, y);
                 comment.Associate(CommentCanvas);
                 comment.Animate();
