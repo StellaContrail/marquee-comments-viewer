@@ -1,6 +1,9 @@
 # Marquee Comments Viewer
 Display marqueeing comments on your desktop
 
+## Demo
+![demo animation](demo.gif)
+
 ## Features
 - Real-time comments rendering
 - Fully IaC support
@@ -16,7 +19,6 @@ npm run build
 cd ./marquee-comments-viewer/infra
 cdk deploy
 ```
-
 
 ## Architecture
 ![architecture](architecture.png)
